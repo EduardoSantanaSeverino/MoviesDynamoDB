@@ -13,4 +13,8 @@
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.75" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>
