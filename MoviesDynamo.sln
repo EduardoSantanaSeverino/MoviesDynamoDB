@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesDynamo", "MoviesDynamo\MoviesDynamo.csproj", "{21157956-7BEE-4269-ADC2-CB3AC6D6564C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21157956-7BEE-4269-ADC2-CB3AC6D6564C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21157956-7BEE-4269-ADC2-CB3AC6D6564C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21157956-7BEE-4269-ADC2-CB3AC6D6564C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21157956-7BEE-4269-ADC2-CB3AC6D6564C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CC83D5DE-FAE6-4EB6-BA81-DEB746D64EF9}
+	EndGlobalSection
+EndGlobal
