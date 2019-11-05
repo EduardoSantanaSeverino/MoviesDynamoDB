@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DynamoDb.Libs.DynamoDb
 {
-    public interface ICreateTable
+    public interface ICreateTable<T>
     {
-        void CreateDynamoDbTable();
+        void CreateDynamoDbTable(T obj);
     }
 }

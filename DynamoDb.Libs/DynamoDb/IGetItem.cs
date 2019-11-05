@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace DynamoDb.Libs.DynamoDb
 {
-    public interface IGetItem
+    public interface IGetItem<T>
     {
-        Task<DynamoTableItems> GetItems(int? id);
+        Task<IEnumerable<T>> GetItems(int? id);
     }
 }

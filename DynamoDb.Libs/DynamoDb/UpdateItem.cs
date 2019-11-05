@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 
 namespace DynamoDb.Libs.DynamoDb
 {
-    public class UpdateItem : IUpdateItem
+    public class UpdateItem<T> : IUpdateItem
     {
-        private IGetItem _getItem;
-        private static readonly string tableName = "TempDynamoDbTable";
+        private IGetItem<T> _getItem;
+
+        private const string numberType = "System.Int32";
+
         private readonly IAmazonDynamoDB _dynamoDbClient;
 
-        public UpdateItem(IGetItem getItem, IAmazonDynamoDB dynamoDbClient)
+        public UpdateItem(IGetItem<T> getItem, IAmazonDynamoDB dynamoDbClient)
         {
             _getItem = getItem;
             _dynamoDbClient = dynamoDbClient;

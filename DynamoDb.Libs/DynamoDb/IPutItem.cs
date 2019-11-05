@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace DynamoDb.Libs.DynamoDb
 {
-    public interface IPutItem
+    public interface IPutItem<T>
     {
-        Task AddNewEntry(int id, string replyDateTime, double price);
+        Task AddNewEntry(T obj);
     }
 }

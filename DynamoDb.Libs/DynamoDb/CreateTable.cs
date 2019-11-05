@@ -7,20 +7,20 @@ using System.Threading;
 
 namespace DynamoDb.Libs.DynamoDb
 {
-    public class CreateTable : ICreateTable
+    public class CreateTable<T> : ICreateTable<T>
     {
         private readonly IAmazonDynamoDB _dynamoDbClient;
-        private static readonly string _tableName = "TempDynamoDbTable";
+        private const string numberType = "System.Int32";
         public CreateTable(IAmazonDynamoDB dynamoDbClient)
         {
             _dynamoDbClient = dynamoDbClient;
         }
 
-        public void CreateDynamoDbTable()
+        public void CreateDynamoDbTable(T obj)
         {
             try
             {
-                CreateTempTable();
+                CreateTempTable(obj);
             }
             catch (Exception e)
             {
@@ -29,49 +29,44 @@ namespace DynamoDb.Libs.DynamoDb
             }
         }
 
-        private void CreateTempTable()
+        private void CreateTempTable(T obj)
         {
             Console.WriteLine("Creating Table");
 
+            var attributeDefinitions = new List<AttributeDefinition>();
+
+            var keySchema = new List<KeySchemaElement>();
+            
+            foreach (var prop in obj.GetType().GetProperties())
+            {
+                attributeDefinitions.Add(new AttributeDefinition
+                {
+                    AttributeName = prop.Name,
+                    AttributeType =(prop.GetType() == Type.GetType(numberType) ? "N": "S")
+                });
+
+                keySchema.Add(new KeySchemaElement
+                {
+                    AttributeName = prop.Name,
+                    KeyType = "HASH"
+                });
+            }
+            
             var request = new CreateTableRequest
             {
-                AttributeDefinitions = new List<AttributeDefinition>
-                {
-                    new AttributeDefinition
-                    {
-                        AttributeName = "Id",
-                        AttributeType = "N"
-                    },
-                    new AttributeDefinition
-                    {
-                        AttributeName = "ReplyDateTime",
-                        AttributeType = "N"
-                    }
-                },
-                KeySchema = new List<KeySchemaElement>
-                {
-                    new KeySchemaElement
-                    {
-                        AttributeName = "Id",
-                        KeyType = "HASH"
-                    },
-                    new KeySchemaElement
-                    {
-                        AttributeName = "ReplyDateTime",
-                        KeyType = "Range"
-                    }
-                },
+                AttributeDefinitions = attributeDefinitions,
+                KeySchema = keySchema,
                 ProvisionedThroughput = new ProvisionedThroughput
                 {
                     ReadCapacityUnits = 5,
                     WriteCapacityUnits = 5
                 },
-                TableName = _tableName
+                TableName = typeof(T).Name
             };
 
             var response = _dynamoDbClient.CreateTableAsync(request);
 
-            WaitUntilTableReady(_tableName);
+            WaitUntilTableReady(typeof(T).Name);
         }
 
         public void WaitUntilTableReady(string tableName)

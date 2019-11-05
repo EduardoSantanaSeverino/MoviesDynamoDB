@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace DynamoDb.Libs.DynamoDb
 {
-    public class GetItem : IGetItem
+    public class GetItem<T> : IGetItem<T>
     {
+        private const string numberType = "System.Int32";
         private readonly IAmazonDynamoDB _dynamoClient;
 
         public GetItem(IAmazonDynamoDB dynamoClient)
@@ -17,24 +18,34 @@ namespace DynamoDb.Libs.DynamoDb
             _dynamoClient = dynamoClient;
         }
 
-        public async Task<DynamoTableItems> GetItems(int? id)
+        public async Task<IEnumerable<T>> GetItems(int? id)
         {
             var queryRequest = RequestBuilder(id);
             var result = await ScanAsync(queryRequest);
-            return new DynamoTableItems
-            {
-                Items = result.Items.Select(Map).ToList()
-            };     
+            return result.Items.Select(Map).ToList();
         } 
 
-        private Item Map(Dictionary<string, AttributeValue> result)
+        private T Map(Dictionary<string, AttributeValue> result)
         {
-            return new Item
+            var retVal = default(T);
+
+            foreach (var prop in retVal.GetType().GetProperties())
             {
-                Id = Convert.ToInt32(result["Id"].N),
-                ReplyDateTime = result["ReplyDateTime"].N,
-                Price = Convert.ToDouble(result["Price"].N)
-            };
+                if (prop.GetType() == Type.GetType(numberType))
+                {
+                    int number = 0;
+                    if (int.TryParse(result[prop.Name].N, out number))
+                    {
+                        prop.SetValue(retVal, number);
+                    }
+                }
+                else
+                {
+                    prop.SetValue(retVal, result[prop.Name].S);
+                }
+            }
+
+            return retVal;
         }
 
         private async Task<ScanResponse> ScanAsync(ScanRequest request)
@@ -49,18 +60,17 @@ namespace DynamoDb.Libs.DynamoDb
             {
                 return new ScanRequest
                 {
-                    TableName = "TempDynamoDbTable"
+                    TableName = typeof(T).Name
                 };   
             }
             return new ScanRequest
             {
-                TableName = "TempDynamoDbTable",
+                TableName = typeof(T).Name,
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     {":v_Id", new AttributeValue{N = id.ToString()}}
                 },
-                FilterExpression = "Id = :v_Id",
-                ProjectionExpression = "Id, ReplyDateTime, Price"
+                FilterExpression = "Id = :v_Id"
             };
         }
     }

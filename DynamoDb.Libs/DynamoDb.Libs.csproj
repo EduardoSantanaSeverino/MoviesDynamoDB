@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DynamoDb\IUpdateItem.cs" />
+    <Compile Remove="DynamoDb\UpdateItem.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.75" />
   </ItemGroup>
 
